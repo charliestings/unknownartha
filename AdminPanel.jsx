@@ -794,8 +794,8 @@ function OverviewPanel({ user }) {
   const dynamicStats = [
     { label: "Live Meditators", value: liveMeditators.length, icon: "🧘", color: liveMeditators.length > 0 ? "#00BFA0" : "#6A6458", sub: liveMeditators.map(m => m.name).join(", ") || "Silence" },
     { label: "Community Members", value: 1284, icon: "🪷", color: "#E8650A", sub: "+38 this month" },
-    { label: "Total Dhyana Sessions", value: meditationHistory.length, icon: "🪔", color: "#D4A017", sub: "Recorded globally" },
-    { label: "Open Source PRs",   value: 23,   icon: "⚡", color: "#CC5577", sub: "Project Brahmastra" },
+    { label: "Total Completed", value: meditationHistory.filter(s => s.completed !== false).length, icon: "🪔", color: "#D4A017", sub: "Successful sessions" },
+    { label: "Premature Exits", value: meditationHistory.filter(s => s.completed === false).length, icon: "⚠️", color: "#CC5577", sub: "Broken sessions" },
   ];
 
   return (
