@@ -402,7 +402,7 @@ function VB({sk, tr, src, color="#D4A017"}) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────
-export default function JnanaBrand() {
+export default function JnanaBrand({ adminUser = null, onAdminClick = () => {}, devoteeUser = null, onDevoteeClick = () => {}, onDevoteeLogout = () => {} }) {
   const [lang, setLang] = useState("en")
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -453,6 +453,32 @@ export default function JnanaBrand() {
       <style>{CSS}</style>
       <SacredCursor/>
 
+      {/* ── FLOATING ADMIN BUTTON ───────────────────────────── */}
+      <button
+        id="admin-fab"
+        onClick={onAdminClick}
+        style={{
+          position:"fixed",bottom:"1.6rem",right:"1.6rem",zIndex:300,
+          display:"flex",alignItems:"center",gap:".6rem",
+          fontFamily:"'Share Tech Mono',monospace",fontSize:"10px",letterSpacing:".2em",textTransform:"uppercase",
+          padding:".65rem 1.3rem",
+          background:adminUser?"rgba(212,160,23,.14)":"rgba(6,6,26,.92)",
+          border:`1px solid ${adminUser?"#D4A017":"#A07A0A"}`,
+          color:adminUser?"#D4A017":"#A07A0A",
+          cursor:"pointer",
+          backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
+          boxShadow:adminUser?"0 0 24px rgba(212,160,23,.22)":"0 0 18px rgba(160,122,10,.18)",
+          transition:"all .28s cubic-bezier(.23,1,.32,1)",
+          WebkitTapHighlightColor:"transparent",
+        }}
+        onMouseEnter={e=>{e.currentTarget.style.borderColor="#D4A017";e.currentTarget.style.color="#D4A017";e.currentTarget.style.boxShadow="0 0 32px rgba(212,160,23,.38)";e.currentTarget.style.background="rgba(212,160,23,.18)"}}
+        onMouseLeave={e=>{e.currentTarget.style.borderColor=adminUser?"#D4A017":"#A07A0A";e.currentTarget.style.color=adminUser?"#D4A017":"#A07A0A";e.currentTarget.style.boxShadow=adminUser?"0 0 24px rgba(212,160,23,.22)":"0 0 18px rgba(160,122,10,.18)";e.currentTarget.style.background=adminUser?"rgba(212,160,23,.14)":"rgba(6,6,26,.92)"}}
+      >
+        <span style={{fontSize:"13px"}}>{adminUser?"⚙":"🔒"}</span>
+        <span>{adminUser?adminUser.name:"Admin Panel"}</span>
+      </button>
+
+
       {/* ── NAV ─────────────────────────────────────────────── */}
       <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:200,display:"flex",justifyContent:"space-between",alignItems:"center",padding:mob?"1rem 1.25rem":"1.1rem 2.5rem",background:(scrolled||menuOpen)?"rgba(3,3,15,.96)":"linear-gradient(to bottom,rgba(3,3,15,.9),transparent)",backdropFilter:(scrolled||menuOpen)?"blur(12px)":"none",borderBottom:(scrolled||menuOpen)?`1px solid ${C.faint}`:"none",transition:"all .38s"}}>
         <a href="#" style={{textDecoration:"none",display:"flex",alignItems:"center",gap:".52rem"}}>
@@ -461,7 +487,31 @@ export default function JnanaBrand() {
         </a>
         {!mob && <div style={{display:"flex",alignItems:"center",gap:"1.8rem"}}>
           {navLinks.map(([h,k])=><a key={h} href={h} className="nl">{gt(k)}</a>)}
-          <div style={{borderLeft:`1px solid ${C.faint}`,paddingLeft:"1.1rem"}}><LangSwitcher/></div>
+          <div style={{borderLeft:`1px solid ${C.faint}`,paddingLeft:"1.1rem",display:"flex",alignItems:"center",gap:".8rem"}}>
+            <LangSwitcher/>
+            <button
+              id="admin-nav-btn"
+              onClick={onAdminClick}
+              title={adminUser ? `Admin Dashboard · ${adminUser.name}` : "Open Admin Panel"}
+              style={{fontFamily:"'Share Tech Mono',monospace",fontSize:"10px",letterSpacing:".18em",textTransform:"uppercase",padding:".48rem 1.1rem",background:adminUser?"rgba(212,160,23,.1)":"rgba(255,255,255,.03)",border:`1px solid ${adminUser?"#D4A017":"#A07A0A66"}`,color:adminUser?"#D4A017":"#A07A0A",cursor:"pointer",transition:"all .25s",WebkitTapHighlightColor:"transparent",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:".45rem"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="#D4A017";e.currentTarget.style.color="#D4A017";e.currentTarget.style.background="rgba(212,160,23,.12)"}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor=adminUser?"#D4A017":"#A07A0A66";e.currentTarget.style.color=adminUser?"#D4A017":"#A07A0A";e.currentTarget.style.background=adminUser?"rgba(212,160,23,.1)":"rgba(255,255,255,.03)"}}
+            >
+              <span style={{fontSize:"11px"}}>{adminUser?"⚙":"🔒"}</span>
+              <span>{adminUser ? adminUser.name : "Admin"}</span>
+            </button>
+            <button
+              id="devotee-nav-btn"
+              onClick={devoteeUser ? onDevoteeLogout : onDevoteeClick}
+              title={devoteeUser ? `Devotee · ${devoteeUser.name} (Logout)` : "Devotee Sanctum"}
+              style={{fontFamily:"'Share Tech Mono',monospace",fontSize:"10px",letterSpacing:".18em",textTransform:"uppercase",padding:".48rem 1.1rem",background:devoteeUser?"rgba(0,191,160,.1)":"rgba(255,255,255,.03)",border:`1px solid ${devoteeUser?"#00BFA0":"#A07A0A66"}`,color:devoteeUser?"#00BFA0":"#A07A0A",cursor:"pointer",transition:"all .25s",WebkitTapHighlightColor:"transparent",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:".45rem"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="#00BFA0";e.currentTarget.style.color="#00BFA0";e.currentTarget.style.background="rgba(0,191,160,.12)"}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor=devoteeUser?"#00BFA0":"#A07A0A66";e.currentTarget.style.color=devoteeUser?"#00BFA0":"#A07A0A";e.currentTarget.style.background=devoteeUser?"rgba(0,191,160,.1)":"rgba(255,255,255,.03)"}}
+            >
+              <span style={{fontSize:"11px"}}>{devoteeUser?"🪷":"⛩"}</span>
+              <span>{devoteeUser ? devoteeUser.name : "Devotee"}</span>
+            </button>
+          </div>
         </div>}
         {mob && <div style={{display:"flex",alignItems:"center",gap:".7rem"}}>
           <LangSwitcher/>
@@ -477,6 +527,22 @@ export default function JnanaBrand() {
             <span className="fm" style={{fontSize:"8px",color:C.teal,letterSpacing:".35em",minWidth:"24px"}}>0{i+1}</span>
             <span className="fm" style={{fontSize:"12px",letterSpacing:".2em",color:C.cream,textTransform:"uppercase"}}>{gt(k)}</span>
           </a>)}
+          <button
+            onClick={e=>{e.stopPropagation();setMenuOpen(false);onAdminClick()}}
+            style={{background:"transparent",border:"none",padding:"1.05rem 0",borderBottom:`1px solid ${C.faint}`,display:"flex",alignItems:"center",gap:".7rem",cursor:"pointer",WebkitTapHighlightColor:"transparent",width:"100%"}}
+          >
+            <span className="fm" style={{fontSize:"8px",color:adminUser?C.turmeric:C.mist,letterSpacing:".35em",minWidth:"24px"}}>{adminUser?"⚙":"🔒"}</span>
+            <span className="fm" style={{fontSize:"12px",letterSpacing:".2em",color:adminUser?C.turmeric:C.mist,textTransform:"uppercase"}}>{adminUser?"Dashboard":"Admin"}</span>
+            {adminUser&&<span className="fm" style={{fontSize:"8px",letterSpacing:".14em",color:C.turmeric2,marginLeft:"auto"}}>{adminUser.name}</span>}
+          </button>
+          <button
+            onClick={e=>{e.stopPropagation();setMenuOpen(false);devoteeUser ? onDevoteeLogout() : onDevoteeClick()}}
+            style={{background:"transparent",border:"none",padding:"1.05rem 0",borderBottom:`1px solid ${C.faint}`,display:"flex",alignItems:"center",gap:".7rem",cursor:"pointer",WebkitTapHighlightColor:"transparent",width:"100%"}}
+          >
+            <span className="fm" style={{fontSize:"8px",color:devoteeUser?C.teal:C.mist,letterSpacing:".35em",minWidth:"24px"}}>{devoteeUser?"🪷":"⛩"}</span>
+            <span className="fm" style={{fontSize:"12px",letterSpacing:".2em",color:devoteeUser?C.teal:C.mist,textTransform:"uppercase"}}>{devoteeUser?"Logout":"Devotee"}</span>
+            {devoteeUser&&<span className="fm" style={{fontSize:"8px",letterSpacing:".14em",color:C.teal,marginLeft:"auto"}}>{devoteeUser.name}</span>}
+          </button>
         </nav>
         <div style={{paddingTop:"1.4rem",borderTop:`1px solid ${C.faint}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <LangSwitcher/>
